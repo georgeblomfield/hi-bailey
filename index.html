@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hi Bailey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg1: #1a0b3d; --bg2: #3b0f5c; --accent: #ffcf3f; --accent2: #ff5fa2;
+    --text: #fff; --muted: rgba(255,255,255,.7); --card: rgba(255,255,255,.08);
+  }
+  body.theme-ocean { --bg1:#031d33; --bg2:#0b4f6c; --accent:#5ef2d6; --accent2:#3fa9ff; }
+  body.theme-sunset { --bg1:#3d0b0b; --bg2:#8a2c0f; --accent:#ffd166; --accent2:#ff6b35; }
+  body.theme-forest { --bg1:#0b2414; --bg2:#1f4d2b; --accent:#b5f44a; --accent2:#4ade80; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    min-height: 100vh; color: var(--text);
+    background: radial-gradient(circle at 20% 10%, var(--bg2), var(--bg1) 70%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 32px 16px; overflow-x: hidden; transition: background .6s;
+  }
+  h1 {
+    font-size: clamp(3rem, 13vw, 7.5rem); font-weight: 800; line-height: .95; text-align: center;
+    letter-spacing: -.03em;
+  }
+  h1 .name {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    display: inline-block; cursor: pointer; transition: transform .2s;
+  }
+  h1 .name:hover { transform: rotate(-4deg) scale(1.05); }
+  .sub { font-size: clamp(1.4rem, 5vw, 2.4rem); margin-top: 14px; text-align: center; font-weight: 500; }
+  .sub strong { color: var(--accent); }
+  .crown { font-size: 3rem; animation: bob 2s ease-in-out infinite; margin-bottom: 8px; }
+  @keyframes bob { 50% { transform: translateY(-10px) rotate(8deg); } }
+
+  .buttons { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 36px; max-width: 640px; }
+  button {
+    font-family: inherit; font-size: 1.05rem; font-weight: 800; border: 0; border-radius: 999px;
+    padding: 14px 22px; cursor: pointer; color: #1a0b3d; background: var(--accent);
+    box-shadow: 0 6px 0 rgba(0,0,0,.35); transition: transform .1s, box-shadow .1s;
+  }
+  button:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.35); }
+  button.alt { background: var(--accent2); color: #fff; }
+  button.ghost { background: var(--card); color: var(--text); box-shadow: 0 6px 0 rgba(0,0,0,.25); }
+
+  .panel {
+    margin-top: 28px; width: 100%; max-width: 560px; background: var(--card);
+    border-radius: 20px; padding: 22px; text-align: center; backdrop-filter: blur(6px);
+  }
+  #compliment { font-size: 1.35rem; min-height: 2.2em; display: flex; align-items: center; justify-content: center; }
+  .meter-label { display: flex; justify-content: space-between; font-size: .95rem; color: var(--muted); margin-bottom: 8px; }
+  .meter { height: 18px; background: rgba(0,0,0,.3); border-radius: 999px; overflow: hidden; }
+  .meter-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .4s cubic-bezier(.2,1.4,.4,1); }
+  #meterMsg { margin-top: 10px; font-size: 1rem; color: var(--muted); min-height: 1.4em; }
+  .count { font-size: 2.6rem; font-weight: 800; color: var(--accent); }
+  .count-label { color: var(--muted); font-size: .95rem; }
+
+  .confetti { position: fixed; top: -20px; width: 10px; height: 14px; pointer-events: none; z-index: 10; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .8; } }
+  .floater { position: fixed; pointer-events: none; font-size: 2rem; z-index: 11; animation: rise 1.6s ease-out forwards; }
+  @keyframes rise { to { transform: translateY(-160px) scale(1.4); opacity: 0; } }
+  .shake { animation: shake .5s; }
+  @keyframes shake { 20%,60% { transform: translateX(-8px) rotate(-1deg);} 40%,80% { transform: translateX(8px) rotate(1deg);} }
+  footer { margin-top: 36px; color: var(--muted); font-size: .85rem; text-align: center; }
+</style>
+</head>
+<body>
+  <div class="crown">👑</div>
+  <h1 id="title">Hi <span class="name" id="name">Bailey</span></h1>
+  <p class="sub">You are a <strong>legend.</strong></p>
+
+  <div class="buttons">
+    <button id="confettiBtn">🎉 Celebrate</button>
+    <button class="alt" id="complimentBtn">💬 Tell me more</button>
+    <button class="ghost" id="themeBtn">🎨 Change vibe</button>
+    <button class="ghost" id="shakeBtn">🔊 Shout it</button>
+  </div>
+
+  <div class="panel">
+    <div id="compliment">Tap “Tell me more” for the facts.</div>
+  </div>
+
+  <div class="panel">
+    <div class="meter-label"><span>Legend-o-meter</span><span id="meterPct">0%</span></div>
+    <div class="meter"><div class="meter-fill" id="meterFill"></div></div>
+    <p id="meterMsg">Tap the button to measure.</p>
+    <div style="margin-top:14px"><button id="meterBtn">📈 Measure legend status</button></div>
+  </div>
+
+  <div class="panel">
+    <div class="count" id="count">0</div>
+    <div class="count-label">high fives given to Bailey</div>
+    <div style="margin-top:14px"><button class="alt" id="hiFiveBtn">🙌 High five</button></div>
+  </div>
+
+  <footer>Made with love for Bailey · tap the name for a surprise</footer>
+
+<script>
+  const compliments = [
+    "Certified legend. Paperwork's been filed.",
+    "Scientists have confirmed: 100% legend, 0% filler.",
+    "Walks into a room and the room gets better.",
+    "Main character energy, every single day.",
+    "Legends are born, not made. Case in point: Bailey.",
+    "If awesome had a face, it would be this one.",
+    "Top-tier human. No notes.",
+    "Other legends ask Bailey for advice.",
+    "Five stars. Would recommend to a friend.",
+    "Proof that good people still exist."
+  ];
+  const meterMsgs = [
+    [40, "Hmm, warming up..."],
+    [80, "Getting serious now..."],
+    [100, "Off the charts. Recalibrating..."],
+    [101, "ERROR: legend levels exceed measurable limits 🔥"]
+  ];
+  const themes = ["", "theme-ocean", "theme-sunset", "theme-forest"];
+  const emojis = ["🎉","⭐","🔥","💪","🏆","😎","🙌","✨"];
+  let themeIdx = 0, lastCompliment = -1, count = 0, measuring = false;
+
+  function confetti(n = 120) {
+    const colors = getComputedStyle(document.body);
+    const palette = [colors.getPropertyValue('--accent'), colors.getPropertyValue('--accent2'), '#ffffff', '#7cf0ff'];
+    for (let i = 0; i < n; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = palette[i % palette.length];
+      c.style.animationDuration = 2 + Math.random() * 2.5 + 's';
+      c.style.animationDelay = Math.random() * .6 + 's';
+      c.style.borderRadius = Math.random() > .5 ? '50%' : '2px';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 5500);
+    }
+  }
+  function floater(x, y, e) {
+    const f = document.createElement('div');
+    f.className = 'floater'; f.textContent = e || emojis[Math.floor(Math.random() * emojis.length)];
+    f.style.left = x - 16 + 'px'; f.style.top = y - 16 + 'px';
+    document.body.appendChild(f); setTimeout(() => f.remove(), 1700);
+  }
+
+  document.getElementById('confettiBtn').onclick = () => confetti();
+
+  document.getElementById('complimentBtn').onclick = () => {
+    let i; do { i = Math.floor(Math.random() * compliments.length); } while (i === lastCompliment);
+    lastCompliment = i;
+    const el = document.getElementById('compliment');
+    el.style.opacity = 0;
+    setTimeout(() => { el.textContent = compliments[i]; el.style.transition = 'opacity .3s'; el.style.opacity = 1; }, 150);
+  };
+
+  document.getElementById('themeBtn').onclick = () => {
+    document.body.classList.remove(themes[themeIdx]);
+    themeIdx = (themeIdx + 1) % themes.length;
+    if (themes[themeIdx]) document.body.classList.add(themes[themeIdx]);
+  };
+
+  document.getElementById('shakeBtn').onclick = () => {
+    const t = document.getElementById('title');
+    t.classList.remove('shake'); void t.offsetWidth; t.classList.add('shake');
+    const sub = document.querySelector('.sub strong');
+    sub.textContent = 'LEGEND!!!';
+    setTimeout(() => sub.textContent = 'legend.', 1200);
+    if ('speechSynthesis' in window) {
+      const u = new SpeechSynthesisUtterance("Hi Bailey. You are a legend!");
+      u.rate = 1; u.pitch = 1.1; speechSynthesis.cancel(); speechSynthesis.speak(u);
+    }
+  };
+
+  document.getElementById('meterBtn').onclick = () => {
+    if (measuring) return; measuring = true;
+    const fill = document.getElementById('meterFill'), pct = document.getElementById('meterPct'), msg = document.getElementById('meterMsg');
+    let v = 0; fill.style.width = '0%';
+    const iv = setInterval(() => {
+      v += Math.ceil(Math.random() * 7);
+      const shown = Math.min(v, 100);
+      fill.style.width = shown + '%';
+      pct.textContent = v > 100 ? '9,999%' : v + '%';
+      msg.textContent = (meterMsgs.find(m => v < m[0]) || meterMsgs[3])[1];
+      if (v > 100) { clearInterval(iv); msg.textContent = meterMsgs[3][1]; confetti(80); measuring = false; }
+    }, 80);
+  };
+
+  document.getElementById('hiFiveBtn').onclick = (e) => {
+    count++;
+    document.getElementById('count').textContent = count;
+    floater(e.clientX, e.clientY, '🙌');
+    if (count % 10 === 0) confetti(60);
+  };
+
+  document.getElementById('name').onclick = (e) => {
+    for (let i = 0; i < 8; i++) setTimeout(() => floater(e.clientX + (Math.random() - .5) * 120, e.clientY + (Math.random() - .5) * 40), i * 70);
+  };
+
+  setTimeout(() => confetti(60), 400);
+</script>
+</body>
+</html>
